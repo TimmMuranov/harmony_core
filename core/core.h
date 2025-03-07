@@ -16,4 +16,7 @@
 #include "polyphony.cpp"
 #include "polyphony.h"
 
+#include "key.cpp"
+#include "key.h"
+
 #endif //CORE

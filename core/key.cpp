@@ -1,48 +1,46 @@
-#include "headers.h"
+#include "key.h"
 
 using namespace std;
 
 Key::Key(){
-    	hTones = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-    	dTones = {2, 2, 1, 2, 2, 2};
-    	mTones = {2, 1, 2, 2, 1, 2};
-
     	Note n;
     	mainTone = n;
+	lad = 'd';
+	mod = 'n';
 }
 
 Scale Key::getScale(){
 	Scale answer;
 	
-	int* lad;
+	int* l;
 	if(lad == 'd') {
-		lad = dTones;
+		l = dTones;
 	} else if (lad == 'm'){
-	       	lad = mTones;
+	       	l = mTones;
 	} else {
-		return answer;
+		l = dTones;
 	}
 
 	answer.noteScale.push_back(mainTone);
-
-        for(int x=1; x<7; ++x){
-		Note n = mainTone;
+	Note n;
+        for(int x=0; x<6; ++x){
+		n = mainTone;
 		n.name += x;
 		if(n.name > 'g'){
 			n.name = 'a';
 		}
-		n.sign = 0;
+		n.sygn = 0;
 
-		if(n.getHeight() - answer.noteScale[x-1].getHeight() < lad[x-1]){
-			++answer.noteScale[x].sign;
-			if(n.getHeight() - answer.noteScale[x-1].getHeight() < lad[x-1]){
-				++answer.noteScale[x].sign;
+		if(n.getHeight() - answer.noteScale[x-1].getHeight() < l[x-1]){
+			++answer.noteScale[x].sygn;
+			if(n.getHeight() - answer.noteScale[x-1].getHeight() < l[x-1]){
+				++answer.noteScale[x].sygn;
 			}
 		}
-		if(n.getHeight() - answer.noteScale[x-1].getHeight() > lad[x-1]){
-			--answer.noteScale[x].sign;
-			if(n.getHeight() - answer.noteScale[x-1].getHeight() > lad[x-1]){
-				--answer.noteScale[x].sign;
+		if(n.getHeight() - answer.noteScale[x-1].getHeight() > l[x-1]){
+			--answer.noteScale[x].sygn;
+			if(n.getHeight() - answer.noteScale[x-1].getHeight() > l[x-1]){
+				--answer.noteScale[x].sygn;
 			}
 		}
 	}
@@ -52,27 +50,40 @@ Scale Key::getScale(){
 		Note nextNote = answer.noteScale[0];
 		++n.octave;
 		if(nextNote.getHeight() - answer.noteScale[6].getHeight() >= 2){
-			++answer.noteScale[6].sign;
+			++answer.noteScale[6].sygn;
+		}
 		if(answer.noteScale[5].getHeight() - answer.noteScale[6].getHeight() < 3){
-			--answer.noteScale[5].sign;
+			--answer.noteScale[5].sygn;
 		}
     	}
 
     	if(mod == 'm'){
-
+		Note nextNote = answer.noteScale[0];
+		++n.octave;
+		if(nextNote.getHeight() - answer.noteScale[6].getHeight() >= 2){
+			++answer.noteScale[6].sygn;
+		}
+		if(answer.noteScale[6].getHeight() - answer.noteScale[5].getHeight() > 2){
+			++answer.noteScale[5].sygn;
+		} else if(answer.noteScale[6].getHeight() - answer.noteScale[5].getHeight() < 2){
+			--answer.noteScale[5].sygn;
+		}
     	}
 
     	if(mod == 'h'){
-    	}
+		answer.noteScale.clear();
+		answer.noteScale.push_back(mainTone);
+	}
     	//как же в падло....
 
     	return answer;
 }
 
-Interval Key::getInterval(int n1, int n2, char md){
-	Interval::Interval answer;
-    if(md != 'n' || md != 'm' || md != 'g' || md != 'n') return answer;
-    if(md == 'h'){
+
+Interval Key::getInterval(int n1, int n2){
+	Interval answer;
+    if(mod != 'n' || mod != 'm' || mod != 'g' || mod != 'h') return answer;
+    if(mod == 'h'){
 	if(n1 > 12 || n1 < 1) return answer;
 	if(n2 > 12 || n2 < 1) return answer;
     } else {
@@ -80,20 +91,28 @@ Interval Key::getInterval(int n1, int n2, char md){
 	if(n2 > 7 || n2 < 1) return answer;
     }
 
-    Scale s = Key::getScale(md);
+    Scale s = getScale();
 
-    interval.parts[0] = s.noteScale[n1];
-    interval.parts[1] = s.noteScale[n2];
+    answer.parts[0] = s.noteScale[n1];
+    answer.parts[1] = s.noteScale[n2];
+
+    return answer;
 }
 
 int Key::whereIs(Note n){
-    
+	int answer;
+
+	return answer;
 }
 
 int Key::whereIs(Interval i){
-    
+	int answer;
+
+	return answer;
 }
 
 int Key::whereIs(Accord a){
-    
+	int answer;
+
+	return answer;
 }
