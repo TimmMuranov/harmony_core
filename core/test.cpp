@@ -103,7 +103,6 @@ void interface() {
 
 int main(){
 	interface();
-=======
 int main(){
     Note note;
     Interval interval;
