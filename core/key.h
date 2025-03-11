@@ -15,9 +15,12 @@ struct Key{
 	int dTones[7] = {2,2,1,2,2,2};
 	int mTones[7] = {2,1,2,2,1,2};
 
-	Scale getScale();
+	Scale getScale(bool);                  // 0 - нисходящее движение, 1 - восходящее.
 
+
+	Interval getInterval(int, int, bool);  // номера первой и вотрой ступени и направление движения
 	Interval getInterval(int, int);
+
 
 	int whereIs(Note);
 

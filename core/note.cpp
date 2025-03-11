@@ -40,9 +40,7 @@ int Note::getHeight(){
     return answer + sygn;
 }
 
-int Note::getInterval(Note note){
-    if(getHeight() >= note.getHeight()){
-        return 0 - (getHeight() - note.getHeight());
-    }
-    return note.getHeight() - getHeight();
+string Note::getName(char system){
+	string answer;
+	return answer;
 }
