@@ -6,7 +6,8 @@ using namespace std;
 struct Interval{
     Interval();
 
-    Note parts[2];
+    Note high;
+    Note low;
     int getDistance();
 };
 

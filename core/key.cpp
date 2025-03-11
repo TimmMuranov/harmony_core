@@ -1,99 +1,117 @@
-#include "headers.h"
+#include "key.h"
 
 using namespace std;
 
 Key::Key(){
-    	hTones = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-    	dTones = {2, 2, 1, 2, 2, 2};
-    	mTones = {2, 1, 2, 2, 1, 2};
-
     	Note n;
     	mainTone = n;
+	lad = 'd';
+	mod = 'n';
 }
 
-Scale Key::getScale(){
+Scale Key::getScale(bool direction){
 	Scale answer;
+	Note n;
+	vector<int> l;
+
+	bool chronScale = 0;
 	
-	int* lad;
-	if(lad == 'd') {
-		lad = dTones;
-	} else if (lad == 'm'){
-	       	lad = mTones;
-	} else {
-		return answer;
+	if(lad == 'd'){
+		for(int x=0; x<7; ++x){
+			l.push_back(dTones[x]);
+		}
+
+		if(mod == 'g'){
+			l[4] = 1;
+			l[5] = 3;
+		}
+	}
+
+	if(lad == 'm'){
+		for(int x=0; x<7; ++x){
+			l.push_back(mTones[x]);
+		}
+	
+		if(mod == 'g'){
+			l[4] = 1;
+			l[5] = 3;
+		}
+		if(mod == 'm'){
+			l[4] = 2;
+			l[5] = 2;
+		}
 	}
 
 	answer.noteScale.push_back(mainTone);
-
-        for(int x=1; x<7; ++x){
-		Note n = mainTone;
+       	for(int x=1; x<l.size(); ++x){
+		n = mainTone;
 		n.name += x;
 		if(n.name > 'g'){
-			n.name = 'a';
+			n.name -= 7;
+			++n.octave;
 		}
-		n.sign = 0;
+		n.sygn = 0;
+		n.sygn = l[x-1] - (n.getHeight() - answer.noteScale[x-1].getHeight());
+		answer.noteScale.push_back(n);
+	}
 
-		if(n.getHeight() - answer.noteScale[x-1].getHeight() < lad[x-1]){
-			++answer.noteScale[x].sign;
-			if(n.getHeight() - answer.noteScale[x-1].getHeight() < lad[x-1]){
-				++answer.noteScale[x].sign;
+	if(mod == 'h'){
+		//Пройтись по всей гамме и включить между каждой большой секундой повышенный первый тон
+		//В нужных местах энгармонически заменить	
+	} 
+
+	if(!direction){
+		if(mod == 'n' || mod == 'g'){
+			for(int x=0; x<3; ++x){
+				n = answer.noteScale[x];
+				++n.octave;
+				answer.noteScale[x] = answer.noteScale[6-x];
+				answer.noteScale[6-x] = n;
 			}
+			answer.noteScale.insert(answer.noteScale.begin(), answer.noteScale[6]);
+			answer.noteScale.pop_back();
 		}
-		if(n.getHeight() - answer.noteScale[x-1].getHeight() > lad[x-1]){
-			--answer.noteScale[x].sign;
-			if(n.getHeight() - answer.noteScale[x-1].getHeight() > lad[x-1]){
-				--answer.noteScale[x].sign;
-			}
+		if(mod == 'm'){
+		}
+		if(mod == 'h'){
 		}
 	}
-	
-
-    	if(mod == 'g'){
-		Note nextNote = answer.noteScale[0];
-		++n.octave;
-		if(nextNote.getHeight() - answer.noteScale[6].getHeight() >= 2){
-			++answer.noteScale[6].sign;
-		if(answer.noteScale[5].getHeight() - answer.noteScale[6].getHeight() < 3){
-			--answer.noteScale[5].sign;
-		}
-    	}
-
-    	if(mod == 'm'){
-
-    	}
-
-    	if(mod == 'h'){
-    	}
-    	//как же в падло....
 
     	return answer;
 }
 
-Interval Key::getInterval(int n1, int n2, char md){
-	Interval::Interval answer;
-    if(md != 'n' || md != 'm' || md != 'g' || md != 'n') return answer;
-    if(md == 'h'){
-	if(n1 > 12 || n1 < 1) return answer;
-	if(n2 > 12 || n2 < 1) return answer;
-    } else {
-	if(n1 > 7 || n2 < 1) return answer;
-	if(n2 > 7 || n2 < 1) return answer;
-    }
 
-    Scale s = Key::getScale(md);
+Interval Key::getInterval(int n1, int n2, bool direction){
+	Interval answer;
+	Scale s = getScale(1);
 
-    interval.parts[0] = s.noteScale[n1];
-    interval.parts[1] = s.noteScale[n2];
+	answer.low = s.noteScale[n1-1];
+	answer.high = s.noteScale[n2-1];
+	return answer;
 }
 
 int Key::whereIs(Note n){
-    
+	int answer;
+	Scale s = getScale(1);
+
+	for(int x=0; x<7; ++x){
+		if(s.noteScale[x].name == n.name){
+		       if(s.noteScale[x].sygn == n.sygn){
+				return x + 1;
+		       }
+		}
+	}
+	return -1;
 }
 
 int Key::whereIs(Interval i){
-    
+	int answer;
+
+	return answer;
 }
 
 int Key::whereIs(Accord a){
-    
+	int answer;
+
+	return answer;
 }
