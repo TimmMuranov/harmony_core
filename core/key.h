@@ -17,7 +17,10 @@ struct Key{
 
 	Scale getScale(bool);                  // 0 - нисходящее движение, 1 - восходящее.
 
+
 	Interval getInterval(int, int, bool);  // номера первой и вотрой ступени и направление движения
+	Interval getInterval(int, int);
+
 
 	int whereIs(Note);
 
