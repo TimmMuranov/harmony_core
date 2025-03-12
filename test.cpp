@@ -1,6 +1,6 @@
 #include <iostream>
 #include <ncurses.h>
-#include "core.h"
+#include "core/core.h"
 
 using namespace std;
 
@@ -12,6 +12,12 @@ void testNote(){
 	cin >> note.sygn;
 	cin >> note.octave;
 	cout << "Note height: " << note.getHeight() << endl;
+	
+	cout << "Enter direction to enharmony change (1 - up, 0 - down)\n";
+	bool flag;
+	cin >> flag;
+	note.enharmonyChange(flag);
+	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
 }
 
 void testInterval(){

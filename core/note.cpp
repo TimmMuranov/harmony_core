@@ -12,11 +12,25 @@ void Note::enharmonyChange(bool dir){
     int noteHeight = getHeight();
     if(dir){
         ++name;
+        if(name > 'g'){
+            name = 'a';
+            ++octave;
+        }
         while(getHeight() != noteHeight){
             --sygn;
         }
     } else {
         --name;
+        if(name < 'a'){
+            name = 'g';
+            --octave;
+            if(octave < 0){
+                name = 'a';
+                octave = 1;
+                sygn = 0;
+                return;
+            }
+        }
         while(getHeight() != noteHeight){
             ++sygn;
         }
