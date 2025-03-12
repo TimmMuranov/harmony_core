@@ -7,8 +7,11 @@ using namespace std;
 void testNote(){
 	Note note;
 	cout << endl << "note test started..." << endl;
-	note.name = 'c';
-	cout << note.name << endl;
+	cout << "Enter note name(a-g), sygn(-2 - 2) and octave (>=1)" << endl;
+	cin >> note.name;
+	cin >> note.sygn;
+	cin >> note.octave;
+	cout << "Note height: " << note.getHeight() << endl;
 }
 
 void testInterval(){
