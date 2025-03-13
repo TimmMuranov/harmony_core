@@ -13,11 +13,12 @@ void testNote(){
 	cin >> note.octave;
 	cout << "Note height: " << note.getHeight() << endl;
 	
-	cout << "Enter direction to enharmony change (1 - up, 0 - down)\n";
-	bool flag;
+	cout << "Enter direction to enharmony change (1 - up, 0 - down) or any key to continiue\n";
+	int flag;
 	cin >> flag;
-	note.enharmonyChange(flag);
+	if (flag == 0 || flag == 1) note.enharmonyChange(flag);
 	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
+	cout << "full note name: " << note.getName() << endl;
 }
 
 void testInterval(){
@@ -52,6 +53,7 @@ void testScale(){
 	for(int x=0; x<scale.noteScale.size(); ++x){
 		cout << scale.noteScale[x].name;
 	}
+	cout << endl;
 }
 
 ////////////////////////////////////////////////////////////

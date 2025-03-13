@@ -54,7 +54,19 @@ int Note::getHeight(){
     return answer + sygn;
 }
 
-string Note::getName(char system){
+string Note::getName(){
 	string answer;
+    answer += name;
+    int s = sygn;
+    while(s != 0){
+        if(s > 0){
+            --s;
+            answer += "is";
+        }
+        if(s < 0){
+            ++s;
+            answer += "es";
+        }
+    }
 	return answer;
 }
