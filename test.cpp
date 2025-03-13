@@ -23,10 +23,14 @@ void testNote(){
 void testInterval(){
 	cout << endl << "Interval test started..." << endl;
 	Interval interval;
-	cout << "enter First and second note,s name" << endl;
+	cout << "Enter First and second note,s name, sygn and octave" << endl;
 	cin >> interval.low.name;
+	cin >> interval.low.sygn;
+	cin >> interval.low.octave;
 	cin >> interval.high.name;
-	cout << interval.getDistance() << endl;
+	cin >> interval.high.sygn;
+	cin >> interval.high.octave;
+	cout << "Distance: " << interval.getDistance() << endl;
 }
 
 void testScale(){
