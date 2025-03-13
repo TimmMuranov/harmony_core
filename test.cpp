@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <ncurses.h>
 #include "core/core.h"
 
@@ -17,6 +18,11 @@ void testNote(){
 	int flag;
 	cin >> flag;
 	if (flag == 0 || flag == 1) note.enharmonyChange(flag);
+	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
+	cout << "enter note name in word system" << endl;
+	string name;
+	cin >> name;
+	note.changeNote(name);
 	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
 	cout << "full note name: " << note.getName() << endl;
 }
