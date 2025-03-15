@@ -1,6 +1,6 @@
 #ifndef K
 #define K
-
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -15,14 +15,12 @@ struct Key{
 	int dTones[7] = {2,2,1,2,2,2};
 	int mTones[7] = {2,1,2,2,1,2};
 
+	void change(string);
+
 	Scale getScale(bool);                  // 0 - нисходящее движение, 1 - восходящее.
-
 	Interval getInterval(int, int, bool);  // номера первой и вотрой ступени и направление движения
-
 	int whereIs(Note);
-
 	int whereIs(Interval);
-    
 	int whereIs(Accord);
 };
 

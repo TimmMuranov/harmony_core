@@ -54,7 +54,7 @@ int Note::getHeight(){
     return answer + sygn;
 }
 
-void Note::changeNote(string n){
+void Note::change(string n){
     if(n[0] > 'g' || n[0] < 'a') return;
     name = n[0];
     if(n.length() == 1){

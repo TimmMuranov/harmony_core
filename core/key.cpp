@@ -9,6 +9,25 @@ Key::Key(){
 	mod = 'n';
 }
 
+void Key::change(string n){
+	if(n[0] <= 'G' && n[0] >= 'A'){
+		lad = 'd';
+		n[0] += 32;
+	} else if (n[0] <= 'g' && n[0] >= 'a'){
+		lad = 'm';
+	} else return;
+
+    mainTone.name = n[0];
+    if(n.length() == 1){
+        mainTone.sygn = 0;
+        return;
+    }
+    for(int x=1; x< n.length(); x+=2){
+        if(n.substr(x, 2) == "is") ++mainTone.sygn;
+        if(n.substr(x, 2) == "es") --mainTone.sygn;
+    }
+}
+
 Scale Key::getScale(bool direction){
 	Scale answer;
 	Note n;
@@ -43,7 +62,7 @@ Scale Key::getScale(bool direction){
 	}
 
 	answer.noteScale.push_back(mainTone);
-       	for(int x=1; x<l.size(); ++x){
+    for(int x=1; x<l.size(); ++x){
 		n = mainTone;
 		n.name += x;
 		if(n.name > 'g'){
@@ -58,7 +77,23 @@ Scale Key::getScale(bool direction){
 	if(mod == 'h'){
 		//Пройтись по всей гамме и включить между каждой большой секундой повышенный первый тон
 		//В нужных местах энгармонически заменить	
-	} 
+		int t = answer.noteScale.size() - 1;
+		for(int x=0; x<t; ++x){
+			if(answer.noteScale[x+1].getHeight() - answer.noteScale[x].getHeight() == 2){
+				n = answer.noteScale[x];
+				++n.sygn;
+				auto iter = answer.noteScale.cbegin();
+				answer.noteScale.emplace(iter + (x+1), n);
+				++t;
+				++x;
+			}
+		}
+		if(lad == 'd'){
+			answer.noteScale[10].enharmonyChange(1);
+		} else if(lad == 'm'){
+			answer.noteScale[1].enharmonyChange(1);
+		}
+	}
 
 	if(!direction){
 		if(mod == 'n' || mod == 'g'){
@@ -76,8 +111,8 @@ Scale Key::getScale(bool direction){
 		if(mod == 'h'){
 		}
 	}
-
-    	return answer;
+    return answer;
+	//Дописать нисходящее движение гаммы
 }
 
 

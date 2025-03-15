@@ -5,6 +5,7 @@
 
 using namespace std;
 
+/////////////////////////////////////////////////////////////
 void testNote(){
 	Note note;
 	cout << endl << "note test started..." << endl;
@@ -22,11 +23,11 @@ void testNote(){
 	cout << "enter note name in word system" << endl;
 	string name;
 	cin >> name;
-	note.changeNote(name);
+	note.change(name);
 	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
 	cout << "full note name: " << note.getName() << endl;
 }
-
+//--------------------------------------------------------
 void testInterval(){
 	cout << endl << "Interval test started..." << endl;
 	Interval interval;
@@ -39,7 +40,7 @@ void testInterval(){
 	cin >> interval.high.octave;
 	cout << "Distance: " << interval.getDistance() << endl;
 }
-
+//--------------------------------------------------------
 void testScale(){
 	Note n;
 	cout << "scale test started..." << endl;
@@ -51,7 +52,7 @@ void testScale(){
 		scale.noteScale.push_back(n);
 		string in;
 		cin >> in;
-		scale.noteScale[x].changeNote(in);
+		scale.noteScale[x].change(in);
 	}
 	cout << "Scale note names: ";
 	for(int x=0; x<scale.noteScale.size(); ++x){
@@ -62,8 +63,28 @@ void testScale(){
 	}
 	cout << endl;
 }
+//--------------------------------------------------------
+void testKey(){
+	Key key;
+	cout << "key test started..." << endl;
+	cout << "enter key name" << endl;
+	string name;
+	cin >> name;
+	key.change(name);
+	cout << "enter key specification: natural(n), garmony(g), melody(m) or chromatic (h)" << endl;
+	char m;
+	cin >> m;
+	key.mod = m;
 
-////////////////////////////////////////////////////////////
+	Scale s = key.getScale(1);
+	int t = s.noteScale.size();
+	cout << "key scale: ";
+	for(int x=0; x<t; ++x){
+		cout << s.noteScale[x].getName() << ' ';
+	}
+	cout << endl;
+}
+/////////////////////////////////////////////////////////////
 void interface() {
     // Инициализация ncurses
     initscr();
@@ -75,7 +96,7 @@ void interface() {
 
 
 //-------  Сюда добавить слово-идентификатор функции -------
-    const char* options[] = {"Exit", "Note", "Interval", "Scale"};
+    const char* options[] = {"Exit", "Note", "Interval", "Scale", "Key"};
 //----------------------------------------------------------
 
     int num_options = sizeof(options) / sizeof(char*);
@@ -112,6 +133,7 @@ void interface() {
 				else if(choice == 1) testNote();
 				else if(choice == 2) testInterval();
 				else if(choice == 3) testScale();
+				else if(choice == 4) testKey();
 //------------------------------------------------------
 
                 return;

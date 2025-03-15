@@ -17,7 +17,7 @@ public:
 	void enharmonyChange(bool);   // 0 - нисходящая замена, 1 - восходящая.
 	int getHeight();              // Высота относительно ля 1 октавы
 	string getName();             // Возвращает имя в буквенной форме
-	void changeNote(string);      // Изменяет имя и знак ноты по буквенному обозначению
+	void change(string);      // Изменяет имя и знак ноты по буквенному обозначению
 };
 
 #endif
