@@ -49,15 +49,16 @@ void testScale(){
 	cin >> size;
 	for (int x=0; x<size; ++x){
 		scale.noteScale.push_back(n);
-		char in;
+		string in;
 		cin >> in;
-		if(in > 'a' && in < 'g'){
-			scale.noteScale[x].name = in;
-		}
+		scale.noteScale[x].changeNote(in);
 	}
 	cout << "Scale note names: ";
 	for(int x=0; x<scale.noteScale.size(); ++x){
-		cout << scale.noteScale[x].name;
+		cout << scale.noteScale[x].getName();
+		if(x != scale.noteScale.size() - 1){
+			cout << ", ";
+		}
 	}
 	cout << endl;
 }
