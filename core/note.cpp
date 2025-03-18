@@ -69,9 +69,9 @@ void Note::change(string n){
 
 string Note::getName(){
 	string answer;
-    answer += name;
-    int s = sygn;
-    while(s != 0){
+	answer += name;
+	int s = sygn;
+	while(s != 0){
         if(s > 0){
             --s;
             answer += "is";
@@ -80,6 +80,9 @@ string Note::getName(){
             ++s;
             answer += "es";
         }
-    }
+	}
+	if((name == 'a' || name == 'e') && answer[1] == 'e'){
+	    answer = answer[0] + answer.substr(2);
+	}
 	return answer;
 }

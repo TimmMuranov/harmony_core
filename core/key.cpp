@@ -5,16 +5,16 @@ using namespace std;
 Key::Key(){
     	Note n;
     	mainTone = n;
-	lad = 'd';
+	lad = "dur";
 	mod = 'n';
 }
 
 void Key::change(string n){
 	if(n[0] <= 'G' && n[0] >= 'A'){
-		lad = 'd';
+		lad = "dur";
 		n[0] += 32;
 	} else if (n[0] <= 'g' && n[0] >= 'a'){
-		lad = 'm';
+		lad = "mol";
 	} else return;
 
     mainTone.name = n[0];
@@ -34,33 +34,53 @@ Scale Key::getScale(bool direction){
 	vector<int> l;
 
 	bool chronScale = 0;
-	
-	if(lad == 'd'){
+//----------------------------------------------------	
+	if(lad == "dur"){
 		for(int x=0; x<7; ++x){
 			l.push_back(dTones[x]);
 		}
-
-		if(mod == 'g'){
-			l[4] = 1;
-			l[5] = 3;
-		}
 	}
-
-	if(lad == 'm'){
+	if(lad == "mol"){
 		for(int x=0; x<7; ++x){
 			l.push_back(mTones[x]);
 		}
-	
-		if(mod == 'g'){
-			l[4] = 1;
-			l[5] = 3;
+	}
+	if(lad == "dor"){
+		for(int x=0; x<7; ++x){
+			l.push_back(oTones[x]);
 		}
-		if(mod == 'm'){
-			l[4] = 2;
-			l[5] = 2;
+	}
+	if(lad == "frg"){
+		for(int x=0; x<7; ++x){
+			l.push_back(fTones[x]);
+		}
+	}
+	if(lad == "lid"){
+		for(int x=0; x<7; ++x){
+			l.push_back(lTones[x]);
+		}
+	}
+	if(lad == "mks"){
+		for(int x=0; x<7; ++x){
+			l.push_back(mTones[x]);
+		}
+	}
+	if(lad == "lks"){
+		for(int x=0; x<7; ++x){
+			l.push_back(kTones[x]);
 		}
 	}
 
+	if(mod == 'g'){
+		l[4] = 1;
+		l[5] = 3;
+	}
+	if(mod == 'm'){
+		l[4] = 2;
+		l[5] = 2;
+	}
+
+//-----------------------------------------------------
 	answer.noteScale.push_back(mainTone);
     for(int x=1; x<l.size(); ++x){
 		n = mainTone;
@@ -88,15 +108,15 @@ Scale Key::getScale(bool direction){
 				++x;
 			}
 		}
-		if(lad == 'd'){
+		if(lad == "dur"){
 			answer.noteScale[10].enharmonyChange(1);
-		} else if(lad == 'm'){
+		} else if(lad == "mol"){
 			answer.noteScale[1].enharmonyChange(1);
 		}
 	}
 
 	if(!direction){
-		if(mod == 'n' || mod == 'g'){
+		if(mod == 'n' || mod == 'g' || mod == 'm'){
 			for(int x=0; x<3; ++x){
 				n = answer.noteScale[x];
 				++n.octave;
@@ -105,8 +125,11 @@ Scale Key::getScale(bool direction){
 			}
 			answer.noteScale.insert(answer.noteScale.begin(), answer.noteScale[6]);
 			answer.noteScale.pop_back();
-		}
-		if(mod == 'm'){
+
+			if(mod == 'm'){
+				--answer.noteScale[1].sygn;
+				--answer.noteScale[2].sygn;
+			}
 		}
 		if(mod == 'h'){
 		}

@@ -71,13 +71,24 @@ void testKey(){
 	string name;
 	cin >> name;
 	key.change(name);
+
+	cout << "enter key lad (dor, frg, lid, mks, lks) or '-' to continiue" << endl;
+	cin >> name;
+	if((name != "-") && (name == "dor" || name == "frg" || name == "lid" || name == "mks" || name == "lks")){
+		key.lad = name;
+	}
+
 	cout << "enter key specification: natural(n), garmony(g), melody(m) or chromatic (h)" << endl;
 	char m;
 	cin >> m;
 	key.mod = m;
 
-	Scale s = key.getScale(1);
+	cout << "key setting finished. Enter scale direction (0 - down, 1 - up)" << endl;
+	bool dir;
+	cin >> dir;
+	Scale s = key.getScale(dir);
 	int t = s.noteScale.size();
+
 	cout << "key scale: ";
 	for(int x=0; x<t; ++x){
 		cout << s.noteScale[x].getName() << ' ';
