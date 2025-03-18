@@ -101,8 +101,6 @@ Scale Key::getScale(bool direction){
 	}
 
 	if(mod == 'h'){
-		//Пройтись по всей гамме и включить между каждой большой секундой повышенный первый тон
-		//В нужных местах энгармонически заменить	
 		int t = answer.noteScale.size() - 1;
 		for(int x=0; x<t; ++x){
 			if(answer.noteScale[x+1].getHeight() - answer.noteScale[x].getHeight() == 2){
@@ -141,7 +139,7 @@ Scale Key::getScale(bool direction){
 		}
 	}
     return answer;
-	//Дописать нисходящее движение гаммы
+	//Исправить нисходящее движение хроматической гаммы
 }
 
 int Key::whereIs(Note n){
