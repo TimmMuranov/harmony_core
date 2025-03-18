@@ -1,5 +1,4 @@
-#include "scale.h"
-#include "note.h"
+#include "headers.h"
 
 using namespace std;
 

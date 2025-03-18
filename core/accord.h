@@ -1,10 +1,8 @@
 #ifndef A
 #define A
 
-#include "note.h"
-#include "scale.h"
 #include <vector>
-
+#include "scale.h"
 using namespace std;
 
 struct Accord{

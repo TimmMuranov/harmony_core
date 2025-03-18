@@ -1,4 +1,4 @@
-#include "key.h"
+#include "headers.h"
 
 using namespace std;
 
@@ -18,6 +18,12 @@ void Key::change(string n){
 	} else return;
 
     mainTone.name = n[0];
+    if(n[0] == 'a' || n[0] == 'e'){
+	    if(n.length() > 2){
+		    n.erase(1);
+	    }
+	    --mainTone.sygn;
+    }
     if(n.length() == 1){
         mainTone.sygn = 0;
         return;
@@ -136,16 +142,6 @@ Scale Key::getScale(bool direction){
 	}
     return answer;
 	//Дописать нисходящее движение гаммы
-}
-
-
-Interval Key::getInterval(int n1, int n2, bool direction){
-	Interval answer;
-	Scale s = getScale(1);
-
-	answer.low = s.noteScale[n1-1];
-	answer.high = s.noteScale[n2-1];
-	return answer;
 }
 
 int Key::whereIs(Note n){

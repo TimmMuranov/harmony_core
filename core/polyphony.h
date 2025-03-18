@@ -1,7 +1,6 @@
 #ifndef P
 #define P
 
-#include "scale.h"
 #include <vector>
 
 using namespace std;

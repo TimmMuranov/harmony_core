@@ -1,4 +1,5 @@
-#include "accord.h"
+#include "headers.h"
+using namespace std;
 
 Accord::Accord(){
 }
