@@ -101,7 +101,10 @@ Scale Key::getScale(bool direction){
 	}
 
 	if(mod == 'h'){
-		int t = answer.noteScale.size() - 1;
+		int t = answer.noteScale.size();
+		n = answer.noteScale[0];
+		++n.octave;
+		answer.noteScale.push_back(n);
 		for(int x=0; x<t; ++x){
 			if(answer.noteScale[x+1].getHeight() - answer.noteScale[x].getHeight() == 2){
 				n = answer.noteScale[x];
@@ -112,11 +115,7 @@ Scale Key::getScale(bool direction){
 				++x;
 			}
 		}
-		if(lad == "dur"){
-			answer.noteScale[10].enharmonyChange(1);
-		} else if(lad == "mol"){
-			answer.noteScale[1].enharmonyChange(1);
-		}
+		answer.noteScale.pop_back();
 	}
 
 	if(!direction){
@@ -136,10 +135,18 @@ Scale Key::getScale(bool direction){
 			}
 		}
 		if(mod == 'h'){
+			++answer.noteScale[0].octave;
+			for(int x=1; x<=5; ++x){
+				n = answer.noteScale[x];
+				answer.noteScale[x] = answer.noteScale[12-x];
+				answer.noteScale[12-x] = n;
+			}
 		}
-	}
+	} 
+//Добавить исключения в построение хроматической гаммы:
+//При восходящей если на след. ноте нат. гаммы тритон вверх, текущая не повышается.
+//При нисходящей если на след. ноте тритон вниз - текущая не понижается.
     return answer;
-	//Исправить нисходящее движение хроматической гаммы
 }
 
 int Key::whereIs(Note n){
