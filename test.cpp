@@ -1,25 +1,46 @@
 #include <iostream>
+#include <string>
 #include <ncurses.h>
-#include "core.h"
+#include "core/core.h"
 
 using namespace std;
 
+/////////////////////////////////////////////////////////////
 void testNote(){
 	Note note;
 	cout << endl << "note test started..." << endl;
-	note.name = 'c';
-	cout << note.name << endl;
+	cout << "Enter note name(a-g), sygn(-2 - 2) and octave (>=1)" << endl;
+	cin >> note.name;
+	cin >> note.sygn;
+	cin >> note.octave;
+	cout << "Note height: " << note.getHeight() << endl;
+	
+	cout << "Enter direction to enharmony change (1 - up, 0 - down) or any key to continiue\n";
+	int flag;
+	cin >> flag;
+	if (flag == 0 || flag == 1) note.enharmonyChange(flag);
+	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
+	cout << "enter note name in word system" << endl;
+	string name;
+	cin >> name;
+	note.change(name);
+	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
+	cout << "full note name: " << note.getName() << endl;
 }
-
+//--------------------------------------------------------
 void testInterval(){
 	cout << endl << "Interval test started..." << endl;
 	Interval interval;
-	cout << "enter First and second note,s name" << endl;
+	cout << "Enter First and second note,s name, sygn and octave" << endl;
 	cin >> interval.low.name;
+	cin >> interval.low.sygn;
+	cin >> interval.low.octave;
 	cin >> interval.high.name;
-	cout << interval.getDistance() << endl;
+	cin >> interval.high.sygn;
+	cin >> interval.high.octave;
+	cout << "Distance: " << interval.getDistance() << endl;
 }
-
+//--------------------------------------------------------
 void testScale(){
 	Note n;
 	cout << "scale test started..." << endl;
@@ -29,19 +50,52 @@ void testScale(){
 	cin >> size;
 	for (int x=0; x<size; ++x){
 		scale.noteScale.push_back(n);
-		char in;
+		string in;
 		cin >> in;
-		if(in > 'a' && in < 'g'){
-			scale.noteScale[x].name = in;
-		}
+		scale.noteScale[x].change(in);
 	}
 	cout << "Scale note names: ";
 	for(int x=0; x<scale.noteScale.size(); ++x){
-		cout << scale.noteScale[x].name;
+		cout << scale.noteScale[x].getName();
+		if(x != scale.noteScale.size() - 1){
+			cout << ", ";
+		}
 	}
+	cout << endl;
 }
+//--------------------------------------------------------
+void testKey(){
+	Key key;
+	cout << "key test started..." << endl;
+	cout << "enter key name" << endl;
+	string name;
+	cin >> name;
+	key.change(name);
 
-////////////////////////////////////////////////////////////
+	cout << "enter key lad (dor, frg, lid, mks, lks) or '-' to continiue" << endl;
+	cin >> name;
+	if((name != "-") && (name == "dor" || name == "frg" || name == "lid" || name == "mks" || name == "lks")){
+		key.lad = name;
+	}
+
+	cout << "enter key specification: natural(n), garmony(g), melody(m) or chromatic (h)" << endl;
+	char m;
+	cin >> m;
+	key.mod = m;
+
+	cout << "key setting finished. Enter scale direction (0 - down, 1 - up)" << endl;
+	bool dir;
+	cin >> dir;
+	Scale s = key.getScale(dir);
+	int t = s.noteScale.size();
+
+	cout << "key scale: ";
+	for(int x=0; x<t; ++x){
+		cout << s.noteScale[x].getName() << ' ';
+	}
+	cout << endl;
+}
+/////////////////////////////////////////////////////////////
 void interface() {
     // Инициализация ncurses
     initscr();
@@ -53,7 +107,7 @@ void interface() {
 
 
 //-------  Сюда добавить слово-идентификатор функции -------
-    const char* options[] = {"Exit", "Note", "Interval", "Scale"};
+    const char* options[] = {"Exit", "Note", "Interval", "Scale", "Key"};
 //----------------------------------------------------------
 
     int num_options = sizeof(options) / sizeof(char*);
@@ -90,6 +144,7 @@ void interface() {
 				else if(choice == 1) testNote();
 				else if(choice == 2) testInterval();
 				else if(choice == 3) testScale();
+				else if(choice == 4) testKey();
 //------------------------------------------------------
 
                 return;

@@ -1,6 +1,4 @@
-#include "note.h"
-#include "interval.h"
-
+#include "headers.h"
 using namespace std;
 
 Interval::Interval(){

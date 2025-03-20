@@ -1,4 +1,4 @@
-#include "polyphony.h"
+#include "headers.h"
 
 Polyphony::Polyphony(){
 }
