@@ -1,6 +1,9 @@
 #include "headers.h"
+#include <iostream>
 
 using namespace std;
+
+
 
 Key::Key(){
     	Note n;
@@ -88,7 +91,7 @@ Scale Key::getScale(bool direction){
 
 //-----------------------------------------------------
 	answer.noteScale.push_back(mainTone);
-    for(int x=1; x<l.size(); ++x){
+	for(int x=1; x<l.size(); ++x){
 		n = mainTone;
 		n.name += x;
 		if(n.name > 'g'){
@@ -99,7 +102,8 @@ Scale Key::getScale(bool direction){
 		n.sygn = l[x-1] - (n.getHeight() - answer.noteScale[x-1].getHeight());
 		answer.noteScale.push_back(n);
 	}
-
+	Scale natAnswer = answer;
+	Scale natAnswerRev = answer;
 	if(mod == 'h'){
 		int t = answer.noteScale.size();
 		n = answer.noteScale[0];
@@ -109,6 +113,7 @@ Scale Key::getScale(bool direction){
 			if(answer.noteScale[x+1].getHeight() - answer.noteScale[x].getHeight() == 2){
 				n = answer.noteScale[x];
 				++n.sygn;
+				if(!direction) n.enharmonyChange(1);
 				auto iter = answer.noteScale.cbegin();
 				answer.noteScale.emplace(iter + (x+1), n);
 				++t;
@@ -116,7 +121,34 @@ Scale Key::getScale(bool direction){
 			}
 		}
 		answer.noteScale.pop_back();
+
+		t = natAnswer.noteScale.size() + 7;
+		for(int x=0; x<t; ++x){
+			natAnswer.noteScale.push_back(natAnswer.noteScale[x]);
+			++natAnswer.noteScale[7+x].octave;
+		} //Прибавляем октаву, чтобы при поиске интервала не выходить за край вектора
+		
+		if(direction){
+			for(int x=1; x<t; ++x){
+				if((natAnswer.noteScale[x+4].getHeight() - natAnswer.noteScale[x].getHeight()) == 6){
+					if((natAnswer.noteScale[x].getHeight() - natAnswer.noteScale[x-1].getHeight()) == 2){
+						int n_num = answer.whereIs(natAnswer.noteScale[x]);
+						answer.noteScale[n_num-1].enharmonyChange(1);
+					}
+				}
+			}
+		}
 	}
+
+	for(int x=0; x<3; ++x){
+		n = natAnswerRev.noteScale[x];
+		++n.octave;
+		natAnswerRev.noteScale[x] = natAnswerRev.noteScale[6-x];
+		natAnswerRev.noteScale[6-x] = n;
+	}
+	natAnswerRev.noteScale.insert(natAnswerRev.noteScale.begin(), natAnswerRev.noteScale[6]);
+	natAnswerRev.noteScale.pop_back();
+	//Инвертитуем натуральную гамму для поиска тритона в случае реверсивного движения гаммы
 
 	if(!direction){
 		if(mod == 'n' || mod == 'g' || mod == 'm'){
@@ -141,35 +173,51 @@ Scale Key::getScale(bool direction){
 				answer.noteScale[x] = answer.noteScale[12-x];
 				answer.noteScale[12-x] = n;
 			}
+
+			int t = natAnswerRev.noteScale.size() + 7;
+			cout << endl;
+			for(int x=1; x<t; ++x){
+				cout << natAnswerRev.noteScale[x].getHeight() << ' ';
+				if((natAnswerRev.noteScale[x+3].getHeight() - natAnswerRev.noteScale[x].getHeight()) == 6){
+					if((natAnswerRev.noteScale[x].getHeight() - natAnswerRev.noteScale[x-1].getHeight()) == 2){
+						int n_num = answer.whereIs(natAnswerRev.noteScale[x]);
+						answer.noteScale[n_num-1].enharmonyChange(0);
+					}
+				}
+			}//Некорректно работает реверс гаммы
+			cout << endl;
 		}
-	} 
+	}
+//------------------ обработка хроматической гаммы ----------
 //Добавить исключения в построение хроматической гаммы:
 //При восходящей если на след. ноте нат. гаммы тритон вверх, текущая не повышается.
 //При нисходящей если на след. ноте тритон вниз - текущая не понижается.
-    return answer;
+	return answer;
 }
 
-int Key::whereIs(Note n){
+int Key::whereIs(Note n, int direction){
 	int answer;
-	Scale s = getScale(1);
-
-	for(int x=0; x<7; ++x){
+	Scale s = getScale(direction);
+	int t = s.noteScale.size();
+	for(int x=0; x<t; ++x){
 		if(s.noteScale[x].name == n.name){
 		       if(s.noteScale[x].sygn == n.sygn){
-				return x + 1;
+			       if(s.noteScale[x].octave == n.octave){
+					return x + 1;
+			       }
 		       }
 		}
 	}
 	return -1;
 }
 
-int Key::whereIs(Interval i){
+int Key::whereIs(Interval i, int direction){
 	int answer;
 
 	return answer;
 }
 
-int Key::whereIs(Accord a){
+int Key::whereIs(Accord a, int direction){
 	int answer;
 
 	return answer;

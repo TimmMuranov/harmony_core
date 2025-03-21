@@ -10,6 +10,10 @@ Note::Note() {
 
 void Note::enharmonyChange(bool dir){
     int noteHeight = getHeight();
+    Note n;
+    n.name = name;
+    n.octave = octave;
+    n.sygn = sygn;
     if(dir){
         ++name;
         if(name > 'g'){
@@ -34,6 +38,11 @@ void Note::enharmonyChange(bool dir){
         while(getHeight() != noteHeight){
             ++sygn;
         }
+    }
+    if(sygn > 2 || sygn < -2){
+	    name = n.name;
+	    octave = n.octave;
+	    sygn = n.sygn;
     }
 }
 
