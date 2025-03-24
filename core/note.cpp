@@ -64,22 +64,22 @@ int Note::getHeight(){
 }
 
 void Note::change(string n){
-    if(n[0] > 'g' || n[0] < 'a') return;
-    name = n[0];
-    if(n.length() == 1){
-        sygn = 0;
-        return;
-    }
-    if(n[0] == 'a' || n[0] == 'e'){
-	    if(n.length() > 2){
-		    n = n[0] + n.substr(2);
-	    }
-	    --sygn;
-    }
-    for(int x=1; x< n.length(); x+=2){
-        if(n.substr(x, 2) == "is") ++sygn;
-        if(n.substr(x, 2) == "es") --sygn;
-    }
+	if(n[0] > 'g' || n[0] < 'a') return;
+	name = n[0];
+	if(n.length() == 1){
+        	sygn = 0;
+        	return;
+	}
+	if(n[0] == 'a' || n[0] == 'e'){
+		if(n.length() > 2){
+			n = n[0] + n.substr(2);
+		}
+		--sygn;
+	}
+	for(int x=1; x< n.length(); x+=2){
+        	if(n.substr(x, 2) == "is") ++sygn;
+        	if(n.substr(x, 2) == "es") --sygn;
+	}
 }
 
 string Note::getName(){
