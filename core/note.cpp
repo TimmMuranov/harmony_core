@@ -101,3 +101,7 @@ string Note::getName(){
 	}
 	return answer;
 }
+
+void Note::resolution(Note note){
+	//Дописать потом
+}

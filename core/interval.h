@@ -1,14 +1,16 @@
 #ifndef I
 #define I
 
+#include <map>
 using namespace std;
 
 struct Interval{
-    Interval();
+	Interval();
 
-    Note high;
-    Note low;
-    int getDistance();
+	Note high; // высокая нота интервала
+	Note low; // низкая нота интервала
+	
+	int getDistance(); // получить расстояние между нотами
 };
 
 #endif //I

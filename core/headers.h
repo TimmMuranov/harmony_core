@@ -4,6 +4,7 @@
 #include "scale.h"
 #include "polyphony.h"
 #include "key.h"
+
 /*
  Подсказка будущему мне:
  Огораживать #ifndef-ами нужно только .h файл.
