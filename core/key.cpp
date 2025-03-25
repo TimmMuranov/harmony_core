@@ -1,6 +1,9 @@
 #include "headers.h"
+#include <iostream>
 
 using namespace std;
+
+
 
 Key::Key(){
     	Note n;
@@ -38,8 +41,6 @@ Scale Key::getScale(bool direction){
 	Scale answer;
 	Note n;
 	vector<int> l;
-
-	bool chronScale = 0;
 //----------------------------------------------------	
 	if(lad == "dur"){
 		for(int x=0; x<7; ++x){
@@ -88,7 +89,7 @@ Scale Key::getScale(bool direction){
 
 //-----------------------------------------------------
 	answer.noteScale.push_back(mainTone);
-    for(int x=1; x<l.size(); ++x){
+	for(int x=1; x<l.size(); ++x){
 		n = mainTone;
 		n.name += x;
 		if(n.name > 'g'){
@@ -98,31 +99,34 @@ Scale Key::getScale(bool direction){
 		n.sygn = 0;
 		n.sygn = l[x-1] - (n.getHeight() - answer.noteScale[x-1].getHeight());
 		answer.noteScale.push_back(n);
-	}
+	}//строим натуральную гамму
+
+	Scale natAnswer = answer;//сохраняем исходрую гамму на случай обработки хром. исключений
 
 	if(mod == 'h'){
 		int t = answer.noteScale.size();
 		n = answer.noteScale[0];
 		++n.octave;
-		answer.noteScale.push_back(n);
+		answer.noteScale.push_back(n);//Прибавляем ноту след. гаммы чтобы найти большую секунду между 7 и 1 
 		for(int x=0; x<t; ++x){
 			if(answer.noteScale[x+1].getHeight() - answer.noteScale[x].getHeight() == 2){
 				n = answer.noteScale[x];
 				++n.sygn;
+				if(!direction) n.enharmonyChange(1);
 				auto iter = answer.noteScale.cbegin();
 				answer.noteScale.emplace(iter + (x+1), n);
 				++t;
 				++x;
 			}
 		}
-		answer.noteScale.pop_back();
+		answer.noteScale.pop_back();//Убираем последнюю ноту, дублирующую первую через октаву
 	}
-
+	
 	if(!direction){
 		if(mod == 'n' || mod == 'g' || mod == 'm'){
 			for(int x=0; x<3; ++x){
 				n = answer.noteScale[x];
-				++n.octave;
+				if(x==0) ++n.octave;
 				answer.noteScale[x] = answer.noteScale[6-x];
 				answer.noteScale[6-x] = n;
 			}
@@ -141,35 +145,86 @@ Scale Key::getScale(bool direction){
 				answer.noteScale[x] = answer.noteScale[12-x];
 				answer.noteScale[12-x] = n;
 			}
+		}//Алгоритмы разворачивания гамм
+	}
+//------------------ обработка хроматической гаммы ----------
+	if(mod=='h'){
+		int t = natAnswer.noteScale.size();
+		if(direction){
+			for(int x=0; x<t; ++x){
+				natAnswer.noteScale.push_back(natAnswer.noteScale[x]);
+				++natAnswer.noteScale[x+7].octave;
+			}//Прибавляем вторую октаву к нат. гамме
+			int t = natAnswer.noteScale.size();
+			for(int x=0; x<t; ++x){
+				if((natAnswer.noteScale[x+4].getHeight() - natAnswer.noteScale[x].getHeight()) == 6){
+					natAnswer.noteScale.insert(natAnswer.noteScale.begin(), natAnswer.noteScale[t-1]);
+					natAnswer.noteScale[0].octave -= 2;//на случай, если гамма начинается с малой секунды
+
+					int enn = answer.whereIs(natAnswer.noteScale[x]);
+					if(natAnswer.noteScale[x].getHeight() - natAnswer.noteScale[x-1].getHeight() == 2){
+						answer.noteScale[enn-1].enharmonyChange(1);
+					}
+				}
+			}//собственно, поиск уменьшенной квинты
+		} else {
+			for(int x=0; x<3; ++x){
+				n = natAnswer.noteScale[x];
+				natAnswer.noteScale[x] = natAnswer.noteScale[6-x];
+				natAnswer.noteScale[6-x] = n;
+			}//Прибавляем
+			for(int x=0; x<t; ++x){
+				natAnswer.noteScale.push_back(natAnswer.noteScale[x]);
+				--natAnswer.noteScale[x+7].octave;
+			}//разворачиваем
+
+			natAnswer.noteScale.insert(natAnswer.noteScale.begin(), natAnswer.noteScale[natAnswer.noteScale.size() - 1]);
+			natAnswer.noteScale.pop_back();
+			natAnswer.noteScale[0].octave += 2;//переносим последнюю ноту в начало и урезаем ее октаву
+			
+			int t = natAnswer.noteScale.size();
+			for(int x=0; x<t; ++x){
+				if((natAnswer.noteScale[x].getHeight() - natAnswer.noteScale[x+4].getHeight()) == 6){
+					natAnswer.noteScale.insert(natAnswer.noteScale.begin(), natAnswer.noteScale[t-1]);
+					natAnswer.noteScale[0].octave += 2;//на тот хе случай, что в первом разе
+					
+					int enn = answer.whereIs(natAnswer.noteScale[x]);
+					if(natAnswer.noteScale[x-1].getHeight() - natAnswer.noteScale[x].getHeight() == 2){
+						answer.noteScale[enn+1] = answer.noteScale[enn+2];
+						++answer.noteScale[enn+1].sygn;//это костыль, но вроде работает
+					}
+				}
+			}//такой же поиск, как раньше, но ноты поиска инвертированы
 		}
-	} 
+	}
 //Добавить исключения в построение хроматической гаммы:
-//При восходящей если на след. ноте нат. гаммы тритон вверх, текущая не повышается.
-//При нисходящей если на след. ноте тритон вниз - текущая не понижается.
-    return answer;
+//Если на след. ноте нат. гаммы уменьшенная квинта - энгармонически заменяем предыдущую ноту.
+	return answer;
 }
 
-int Key::whereIs(Note n){
+int Key::whereIs(Note n, int direction){
 	int answer;
-	Scale s = getScale(1);
-
-	for(int x=0; x<7; ++x){
+	Scale s = getScale(direction);
+	int t = s.noteScale.size();
+	for(int x=0; x<t; ++x){
 		if(s.noteScale[x].name == n.name){
 		       if(s.noteScale[x].sygn == n.sygn){
-				return x + 1;
+			       if(s.noteScale[x].octave == n.octave){
+					return x + 1;
+			       }
 		       }
 		}
 	}
 	return -1;
 }
 
-int Key::whereIs(Interval i){
+int Key::whereIs(Interval i, int direction){
 	int answer;
 
 	return answer;
 }
 
-int Key::whereIs(Accord a){
+int Key::whereIs(Accord a, int direction){
 	int answer;
 
 	return answer;

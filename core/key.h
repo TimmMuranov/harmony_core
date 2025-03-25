@@ -19,13 +19,13 @@ struct Key{
 	int mTones[7] = {2,1,2,2,1,2}; // mol - Минорный (эолийский)
 	int kTones[7] = {1,2,2,1,2,2}; // lks - Локрийский
 
-	void change(string); // Лады, кроме dur и mol задаются вручную
+	void change(string);        // Лады, кроме dur и mol задаются вручную
 
-	Scale getScale(bool); // 0 - нисходящее движение, 1 - восходящее.
+	Scale getScale(bool);       // 0 - нисходящее движение, 1 - восходящее.
 
-	int whereIs(Note);
-	int whereIs(Interval);
-	int whereIs(Accord);
+	int whereIs(Note, int);     // Поиск структуры в тональности
+	int whereIs(Interval, int); // Первый аргумент - структура
+	int whereIs(Accord, int);   // Второй - направление звукоряда
 };
 
 #endif // K

@@ -10,6 +10,7 @@ public:
 
 	vector<Note> noteScale;
 	void transport(int);
+	int whereIs(Note);
 };
 
 #endif // S

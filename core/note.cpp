@@ -10,6 +10,10 @@ Note::Note() {
 
 void Note::enharmonyChange(bool dir){
     int noteHeight = getHeight();
+    Note n;
+    n.name = name;
+    n.octave = octave;
+    n.sygn = sygn;
     if(dir){
         ++name;
         if(name > 'g'){
@@ -35,6 +39,11 @@ void Note::enharmonyChange(bool dir){
             ++sygn;
         }
     }
+    if(sygn > 2 || sygn < -2){
+	    name = n.name;
+	    octave = n.octave;
+	    sygn = n.sygn;
+    }
 }
 
 int Note::getHeight(){
@@ -55,22 +64,22 @@ int Note::getHeight(){
 }
 
 void Note::change(string n){
-    if(n[0] > 'g' || n[0] < 'a') return;
-    name = n[0];
-    if(n.length() == 1){
-        sygn = 0;
-        return;
-    }
-    if(n[0] == 'a' || n[0] == 'e'){
-	    if(n.length() > 2){
-		    n = n[0] + n.substr(2);
-	    }
-	    --sygn;
-    }
-    for(int x=1; x< n.length(); x+=2){
-        if(n.substr(x, 2) == "is") ++sygn;
-        if(n.substr(x, 2) == "es") --sygn;
-    }
+	if(n[0] > 'g' || n[0] < 'a') return;
+	name = n[0];
+	if(n.length() == 1){
+        	sygn = 0;
+        	return;
+	}
+	if(n[0] == 'a' || n[0] == 'e'){
+		if(n.length() > 2){
+			n = n[0] + n.substr(2);
+		}
+		--sygn;
+	}
+	for(int x=1; x< n.length(); x+=2){
+        	if(n.substr(x, 2) == "is") ++sygn;
+        	if(n.substr(x, 2) == "es") --sygn;
+	}
 }
 
 string Note::getName(){
@@ -91,4 +100,8 @@ string Note::getName(){
 	    answer = answer[0] + answer.substr(2);
 	}
 	return answer;
+}
+
+void Note::resolution(Note note){
+	//Дописать потом
 }

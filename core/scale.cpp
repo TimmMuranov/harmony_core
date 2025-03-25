@@ -8,3 +8,16 @@ Scale::Scale(){
 void Scale::transport(int halfTones){
 }
 
+int Scale::whereIs(Note n){
+	int t = noteScale.size();
+	for(int x=0; x<t; ++x){
+		if(n.name == noteScale[x].name){
+			if(n.sygn == noteScale[x].sygn){
+				if(n.octave == noteScale[x].octave){
+					return x;
+				}
+			}
+		}
+	}
+	return -1;
+}
