@@ -102,6 +102,6 @@ string Note::getName(){
 	return answer;
 }
 
-void Note::resolution(Note note){
+void Note::resolution(string keyName, bool direction){
 	//Дописать потом
 }
