@@ -13,7 +13,6 @@ void testNote(){
 	cin >> note.name;
 	cin >> note.sygn;
 	cin >> note.octave;
-	cout << "Note height: " << note.getHeight() << endl;
 	
 	cout << "Enter direction to enharmony change (1 - up, 0 - down) or any key to continiue\n";
 	int flag;
@@ -25,6 +24,13 @@ void testNote(){
 	cin >> name;
 	note.change(name);
 	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
+	cout << "full note name: " << note.getName() << endl;
+	cout << "enter key and direction to resolution" << endl;
+	string keyN;
+	bool dir;
+	cin >> keyN;
+	cin >> dir;
+	note.resolution(keyN, dir);
 	cout << "full note name: " << note.getName() << endl;
 }
 //--------------------------------------------------------

@@ -103,5 +103,51 @@ string Note::getName(){
 }
 
 void Note::resolution(string keyName, bool direction){
-	//Дописать потом
+	Key key;
+	key.change(keyName);
+	Scale s = key.getScale(1);
+	
+	int noteIndex = 0;
+
+	for(int x=0; x<7; ++x){
+		if(name == s.noteScale[x].name) break;
+		++noteIndex;
+	}
+
+	if(noteIndex == 0 || noteIndex == 2 || noteIndex == 4){
+		sygn = s.noteScale[noteIndex].sygn;
+	}
+
+	if(noteIndex == 5){
+		if(direction){
+			name = s.noteScale[0].name;
+			sygn = s.noteScale[0].sygn;
+			octave += 1;
+		} else {
+			name = s.noteScale[4].name;
+			sygn = s.noteScale[4].sygn;
+		}
+	}
+
+	if(noteIndex == 6){
+		if(direction){
+			name = s.noteScale[0].name;
+			sygn = s.noteScale[0].sygn;
+			octave += 1;
+		} else {
+			name = s.noteScale[4].name;
+			sygn = s.noteScale[4].sygn;
+		}
+	}
+
+	if(noteIndex == 1 || noteIndex == 3){
+		if(direction){
+			name = s.noteScale[noteIndex + 1].name;
+			sygn = s.noteScale[noteIndex + 1].sygn;
+		} else {
+			name = s.noteScale[noteIndex - 1].name;
+			sygn = s.noteScale[noteIndex - 1].sygn;
+		}
+	}//потестить
+
 }

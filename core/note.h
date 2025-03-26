@@ -14,11 +14,11 @@ public:
 	int sygn;
 	int octave;
 
-	void enharmonyChange(bool);      // 0 - нисходящая замена, 1 - восходящая.
-	int getHeight();                 // Высота относительно ля суб контр октавы.
-	string getName();                // Возвращает имя в буквенной форме.
-	void change(string);             // Изменяет ноту по буквенному обозначению.
-	void resolution(string, bool);   // Разрешает ноту в указанной тональности вниз или вверх.
+	void enharmonyChange(bool); // 0 - нисходящая замена, 1 - восходящая.
+	int getHeight(); // Высота относительно ля суб контр октавы.
+	string getName(); // Возвращает имя в буквенной форме.
+	void change(string); // Изменяет ноту по буквенному обозначению.
+	void resolution(string, bool); // Разрешает ноту в указанной тональности вниз или вверх.
 };
 
 #endif
