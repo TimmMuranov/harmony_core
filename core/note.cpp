@@ -70,15 +70,23 @@ void Note::change(string n){
         	sygn = 0;
         	return;
 	}
-	if(n[0] == 'a' || n[0] == 'e'){
-		if(n.length() > 2){
-			n = n[0] + n.substr(2);
+	sygn = 0;
+	for(int x=1; x< n.length();){
+		if(n[x] == 's' && x == 1){
+			--sygn;
+			++x;
+			continue;
 		}
-		--sygn;
-	}
-	for(int x=1; x< n.length(); x+=2){
-        	if(n.substr(x, 2) == "is") ++sygn;
-        	if(n.substr(x, 2) == "es") --sygn;
+        	if(n.substr(x, 2) == "is"){
+			++sygn;
+			x+=2;
+			continue;
+		}
+        	if(n.substr(x, 2) == "es"){
+			--sygn;
+			x+=2;
+			continue;
+		}
 	}
 }
 

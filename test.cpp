@@ -6,32 +6,59 @@
 using namespace std;
 
 /////////////////////////////////////////////////////////////
+Note note;
 void testNote(){
-	Note note;
-	cout << endl << "note test started..." << endl;
-	cout << "Enter note name(a-g), sygn(-2 - 2) and octave (>=1)" << endl;
-	cin >> note.name;
-	cin >> note.sygn;
-	cin >> note.octave;
-	
-	cout << "Enter direction to enharmony change (1 - up, 0 - down) or any key to continiue\n";
-	int flag;
-	cin >> flag;
-	if (flag == 0 || flag == 1) note.enharmonyChange(flag);
-	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
-	cout << "enter note name in word system" << endl;
-	string name;
-	cin >> name;
-	note.change(name);
-	cout << "name: " << note.name << ", sygn: " << note.sygn<<", octave: "<<note.octave<<endl;
-	cout << "full note name: " << note.getName() << endl;
-	cout << "enter key and direction to resolution" << endl;
-	string keyN;
-	bool dir;
-	cin >> keyN;
-	cin >> dir;
-	note.resolution(keyN, dir);
-	cout << "full note name: " << note.getName() << endl;
+	char command;
+	cin >> command;
+	if(command == 'r'){
+		system("clear");
+		testNote();
+	} else if (command == 'q'){
+		return;
+	} else if(command == 'h'){
+		cout << "'r' - restart console\n'c' - change note\n";
+		cout << "'e' - enharmony change\n't' - tell notes parametres\n";
+		cout << "'p' - prepared notes parameters\n'q' - quit\n";
+		testNote();
+	} else if(command == 'c'){
+		cout << "enter new note name\n";
+		string n;
+		cin >> n;
+		note.change(n);
+		cout << "note changet to " << n << endl;
+		testNote();
+	} else if(command == 'e'){
+		cout << "enter enharmony change direction\n";
+		bool dir;
+		cin >> dir;
+		note.enharmonyChange(dir);
+		cout << "enharmony change completed\n";
+		testNote();
+	} else if(command == 't'){
+		cout << "note name: " << note.getName() << endl;
+		cout << "---------------------" << endl;
+		cout << "note height: " << note.getHeight() << endl;
+		cout << "note name (obj): " << note.name << endl;
+		cout << "note sygn: " << note.sygn << endl;
+		cout << "note octave: " << note.octave << endl;
+		testNote();
+	} else if(command == 'p'){
+		cout << "enter notes name, sygn and octave\n";
+		char n;
+		cin >> n;
+		note.name = n;
+		int t;
+		cin >> t;
+		note.sygn = t;
+		cin >> t;
+		note.octave = t;
+		cout << "notes parametres changed\n";
+		testNote();
+	}
+	else {
+		cout << "unknown command...\n";
+		testNote();
+	}
 }
 //--------------------------------------------------------
 void testInterval(){
