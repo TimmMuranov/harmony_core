@@ -23,9 +23,9 @@ struct Key{
 
 	Scale getScale(bool);       // 0 - нисходящее движение, 1 - восходящее.
 
-	int whereIs(Note, int);     // Поиск структуры в тональности
-	int whereIs(Interval, int); // Первый аргумент - структура
-	int whereIs(Accord, int);   // Второй - направление звукоряда
+	int whereIs(Note, bool);     // Поиск структуры в тональности
+	int whereIs(Interval, bool); // Первый аргумент - структура
+	int whereIs(Accord, bool);   // Второй - направление звукоряда
 };
 
 #endif // K
