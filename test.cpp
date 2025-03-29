@@ -18,7 +18,8 @@ void testNote(){
 	} else if(command == 'h'){
 		cout << "'r' - restart console\n'c' - change note\n";
 		cout << "'e' - enharmony change\n't' - tell notes parametres\n";
-		cout << "'p' - prepared notes parameters\n'q' - quit\n";
+		cout << "'p' - prepared notes parameters\n's' - resolution note\n";
+		cout << "'q' - quit\n";
 		testNote();
 	} else if(command == 'c'){
 		cout << "enter new note name\n";
@@ -54,6 +55,14 @@ void testNote(){
 		note.octave = t;
 		cout << "notes parametres changed\n";
 		testNote();
+	} else if(command == 's'){
+		cout << "enter key and direction to resolution\n";
+		string k;
+		cin >> k;
+		bool dir;
+		cin >> dir;
+		cout << "resolution complete to tone " << note.resolution(k,dir) << endl;
+		testNote();
 	}
 	else {
 		cout << "unknown command...\n";
@@ -61,17 +70,59 @@ void testNote(){
 	}
 }
 //--------------------------------------------------------
+Interval interval;
 void testInterval(){
-	cout << endl << "Interval test started..." << endl;
-	Interval interval;
-	cout << "Enter First and second note,s name, sygn and octave" << endl;
-	cin >> interval.low.name;
-	cin >> interval.low.sygn;
-	cin >> interval.low.octave;
-	cin >> interval.high.name;
-	cin >> interval.high.sygn;
-	cin >> interval.high.octave;
-	cout << "Distance: " << interval.getDistance() << endl;
+    char command;
+    cin >> command;
+
+    if(command == 'h'){
+        cout << "'r' - restart\n'c' - change notes params\n";
+        cout << "'d' - get distance of notes\n't' - tell parans\n'q' - quit\n";
+        testInterval();
+    } else if(command == 'r'){
+        system("clear");
+        testInterval();
+    } else if(command == 'c'){
+        cout << "enter 1st note name and octave (or 'n' to set next note)\n";
+        string n;
+        int t;
+        cin >> n;
+        while(1){
+            if(n == "n") break;
+            interval.low.change(n);
+            cin >> t;
+            interval.low.octave = t;
+            break;
+        }
+        cout << "enter 2st notes name and octave (or 'n' to finish)\n";
+        cin >> n;
+        while(1){
+            if(n == "n") break;
+            interval.high.change(n);
+            cin >> t;
+            interval.high.octave = t;
+            break;
+        }
+        cout << "interval setting finished\n";
+        testInterval();
+    } else if(command == 'd'){
+        cout << "distance betwen notes: " << interval.getDistance() << " h.t.\n";
+        testInterval();
+    } else if(command == 'q'){
+        return;
+    } else if(command == 't'){
+        cout << "low note name: " << interval.low.getName() << endl;
+        cout << "octave: " << interval.low.octave << endl;
+        cout << "----------------\n";
+        cout << "high note name: " << interval.high.getName() << endl;
+        cout << "octave: " << interval.high.octave << endl;
+        testInterval();
+    }
+    else {
+        cout << "unknown command...\n";
+        testInterval();
+    }
+
 }
 //--------------------------------------------------------
 void testScale(){

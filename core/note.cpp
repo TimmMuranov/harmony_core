@@ -110,11 +110,11 @@ string Note::getName(){
 	return answer;
 }
 
-void Note::resolution(string keyName, bool direction){
+int Note::resolution(string keyName, bool direction){
 	Key key;
 	key.change(keyName);
 	Scale s = key.getScale(1);
-	
+	int firstHeight = getHeight();//для проверки перехода в другую октаву
 	int noteIndex = 0;
 
 	for(int x=0; x<7; ++x){
@@ -156,6 +156,14 @@ void Note::resolution(string keyName, bool direction){
 			name = s.noteScale[noteIndex - 1].name;
 			sygn = s.noteScale[noteIndex - 1].sygn;
 		}
-	}//потестить
+	}
 
+    if(firstHeight - getHeight() < -4){
+        --octave;
+    }
+    if(firstHeight - getHeight() > 4){
+        ++octave;
+    }
+    
+    return s.whereIs(*this) + 1;
 }
