@@ -178,6 +178,14 @@ void testKey(){
 		cout << s.noteScale[x].getName() << ' ';
 	}
 	cout << endl;
+    cout << "enter intervals notes to search interval in this key\n";
+    Interval i;
+    cin >> name;
+    i.low.change(name);
+    cin >> name;
+    i.high.change(name);
+
+    cout << "interval defined in "<< key.whereIs(i, 1) << endl;//дописать
 }
 /////////////////////////////////////////////////////////////
 void interface() {
