@@ -1,31 +1,45 @@
 /* 
-g++ main.cpp -o bin/main --std=c++14 -I/usr/local/include -lTgBot -lboost_system -lssl -lcrypto -lpthread 
-*/
-/*если возникла ошибка при отправке комита без имени - "git pull --no-rebase" в консоль*/
+g++ testTgBot.cpp -o bin/testTgBot --std=c++20 -I/usr/local/include -lTgBot -lboost_system -lssl -lcrypto -lpthread
+clear
+*/   
 #include <stdio.h>
 #include <tgbot/tgbot.h>
 
 #include "core/core.h"
 
-int main() {
-    TgBot::Bot bot("token");
+TgBot::Bot bot("7923105858:AAFPCA1cc1sacxBdUpfQP1aeWI-Rv_mTdFg");
+string mode = "start";   // костыль, позволяющий определить режим работы бота
+string command = "";     // костыль, хранящий команду режима
+Note note;
 
-    std::vector<TgBot::Message> mesHis; // должен быть список команд
-
-//-------------------------- обработчики команд -----------------------------------
+int main(){
+//-------------------------- Установка режима работы бота -----------------------------------
     bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "прив ^^");
+        mode = "satrt";
+        bot.getApi().sendMessage(message->chat->id, "Доступные режимы работы:\n/note");
     });
-    bot.getEvents().onCommand("harmony", [&bot](TgBot::Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "да не знаю я вашу гармонию XD");
+    bot.getEvents().onCommand("note", [&bot](TgBot::Message::Ptr message){
+        mode = "note";
+        bot.getApi().sendMessage(message->chat->id,
+            "Режим работы с нотой акривирован. Доступные команды:\n"
+            "/set - установить имя и знак ноты\n"
+            "/setoctave - установить октаву ноты\n"
+            "/get - получить имя ноты и ее октаву\n"
+            "/exit - выйти из режима работы с нотой"
+            );
     });
-//-------------------------- обработчик сообщений ---------------------------------
+    bot.getEvents().onCommand("interval", [&bot](TgBot::Message::Ptr message){
+        mode = "interval";
+        bot.getApi().sendMessage(message->chat->id, "Режим работы с интервалом активирован");
+    });
+//-------------------- обработчик сообщений в зависимости от режима -------------------------
     bot.getEvents().onAnyMessage([&bot](TgBot::Message::Ptr message) {
-        printf("User wrote %s\n", message->text.c_str());
-        if (StringTools::startsWith(message->text, "/start")) {
-            return;
-        }
-        //bot.getApi().sendMessage(message->chat->id, "Your message is: " + message->text);
+        string userText = message->text.c_str();
+        if(userText == "/start" || userText == "/note" || userText == "/interval") return;
+
+        printf("User wrote %s\n", userText);
+        
+        bot.getApi().sendMessage(message->chat->id, "Вы ввели: " + userText + ".\nРежим работы: " + mode);
     });
 //-----------------------------      старт      -----------------------------------
     try {
@@ -40,3 +54,5 @@ int main() {
     }
     return 0;
 }
+//Я просто хз как сдвинуться с этой мертвой точки. Эту библиотеку определенно написало существо с другой планеты....
+
