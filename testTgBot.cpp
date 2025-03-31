@@ -7,7 +7,7 @@ clear
 
 #include "core/core.h"
 
-TgBot::Bot bot("7923105858:AAFPCA1cc1sacxBdUpfQP1aeWI-Rv_mTdFg");
+TgBot::Bot bot("token");
 string mode = "start";   // костыль, позволяющий определить режим работы бота
 string command = "";     // костыль, хранящий команду режима
 Note note;
