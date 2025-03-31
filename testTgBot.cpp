@@ -27,6 +27,9 @@ int main(){
             "/get - получить имя ноты и ее октаву\n"
             "/exit - выйти из режима работы с нотой"
             );
+    bot.getEvents().onCommand("note", [&bot](TgBot::Message::Ptr message) {
+        
+        bot.getApi().sendMessage(message->chat->id, "Режим ноты активирован");
     });
     bot.getEvents().onCommand("interval", [&bot](TgBot::Message::Ptr message){
         mode = "interval";
