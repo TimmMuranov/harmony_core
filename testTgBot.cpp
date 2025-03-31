@@ -16,8 +16,9 @@ int main() {
     bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) {
         bot.getApi().sendMessage(message->chat->id, "прив ^^");
     });
-    bot.getEvents().onCommand("harmony", [&bot](TgBot::Message::Ptr message) {
-        bot.getApi().sendMessage(message->chat->id, "да не знаю я вашу гармонию XD");
+    bot.getEvents().onCommand("note", [&bot](TgBot::Message::Ptr message) {
+        
+        bot.getApi().sendMessage(message->chat->id, "Начинаем тест ноты...");
     });
 //-------------------------- обработчик сообщений ---------------------------------
     bot.getEvents().onAnyMessage([&bot](TgBot::Message::Ptr message) {
