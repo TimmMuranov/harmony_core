@@ -13,9 +13,7 @@ int Scale::whereIs(Note n){
 	for(int x=0; x<t; ++x){
 		if(n.name == noteScale[x].name){
 			if(n.sygn == noteScale[x].sygn){
-				if(n.octave == noteScale[x].octave){
-					return x;
-				}
+				return x;
 			}
 		}
 	}

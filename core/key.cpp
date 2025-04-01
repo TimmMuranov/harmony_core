@@ -197,34 +197,53 @@ Scale Key::getScale(bool direction){
 			}//такой же поиск, как раньше, но ноты поиска инвертированы
 		}
 	}
-//Добавить исключения в построение хроматической гаммы:
-//Если на след. ноте нат. гаммы уменьшенная квинта - энгармонически заменяем предыдущую ноту.
 	return answer;
 }
 
-int Key::whereIs(Note n, int direction){
+int Key::whereIs(Note n, bool direction){
 	int answer;
 	Scale s = getScale(direction);
 	int t = s.noteScale.size();
 	for(int x=0; x<t; ++x){
 		if(s.noteScale[x].name == n.name){
-		       if(s.noteScale[x].sygn == n.sygn){
-			       if(s.noteScale[x].octave == n.octave){
+		    if(s.noteScale[x].sygn == n.sygn){
+			    if(s.noteScale[x].octave == n.octave){
 					return x + 1;
-			       }
-		       }
+			    }
+		    }
 		}
 	}
 	return -1;
 }
 
-int Key::whereIs(Interval i, int direction){
-	int answer;
+int Key::whereIs(Interval i, bool direction){
+    Scale s = this->getScale(direction);
+    int firstSize = s.noteScale.size();
+    for(int x=0; x<firstSize; ++x){
+        s.noteScale.push_back(s.noteScale[x]);
+        ++s.noteScale[x+firstSize].octave;
+    }
+    if(direction){
+        for(int x=0; x<s.noteScale.size(); ++x){
+            if(i.low.name == s.noteScale[x].name && i.low.sygn == s.noteScale[x].sygn){
+                if(i.high.name == s.noteScale[x + i.getDistance()].name && i.high.sygn == s.noteScale[x + i.getDistance()].sygn){
+                    return x + 1;
+                }
+            }
+        }
+    } else {
+        for(int x=0; x<s.noteScale.size(); ++x){
+            if(i.high.name == s.noteScale[x].name && i.high.sygn == s.noteScale[x].sygn){
+                if(i.low.name == s.noteScale[x + i.getDistance()].name && i.low.sygn == s.noteScale[x + i.getDistance()].sygn){
+                    return (x + 1) - i.getDistance();
+                }
+            }
+        }
+    }
+	return -1;
+}//потестить. Сейчас я в бк, бухать колу
 
-	return answer;
-}
-
-int Key::whereIs(Accord a, int direction){
+int Key::whereIs(Accord a, bool direction){
 	int answer;
 
 	return answer;

@@ -11,3 +11,10 @@ Interval::Interval(){
 int Interval::getDistance(){
 	return high.getHeight() - low.getHeight();
 }
+vector<string> Interval::getResolutionsList(){
+        vector<string> answer;
+
+	return answer;
+}
+void resolution(string keyName){
+}

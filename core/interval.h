@@ -1,7 +1,8 @@
 #ifndef I
 #define I
 
-#include <map>
+#include <string>
+#include <vector>
 using namespace std;
 
 struct Interval{
@@ -11,6 +12,8 @@ struct Interval{
 	Note low; // низкая нота интервала
 	
 	int getDistance(); // получить расстояние между нотами
+        vector<string> getResolutionsList(); // получить список тональностей 
+        void resolution(string); // разрешить в указанную тональность
 };
 
 #endif //I
