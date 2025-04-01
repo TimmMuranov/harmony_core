@@ -8,7 +8,7 @@ clear
 using namespace std;
 using namespace TgBot;
 
-Bot bot("7923105858:AAFPCA1cc1sacxBdUpfQP1aeWI-Rv_mTdFg");
+Bot bot("token");
 
 boost::variant< std::int64_t, std::string > workChat; // хранит айди рабочего чата
 Message::Ptr workMessage; // хранит данные сообщения-монитора
