@@ -4,15 +4,25 @@ clear
 */ 
 #include <iostream>
 #include <tgbot/tgbot.h>
-
+#include "core/core.h"
 using namespace std;
 using namespace TgBot;
 
 Bot bot("token");
 
-boost::variant< std::int64_t, std::string > workChat; // хранит айди рабочего чата
-Message::Ptr workMessage; // хранит данные сообщения-монитора
-Message::Ptr keyMessage; // хранит данные сообщения-клавиатуры
+boost::variant< std::int64_t, std::string > workChat; // айди рабочего чата
+Message::Ptr workMessage; // данные сообщения-монитора
+Message::Ptr keyMessage; // данные сообщения-клавиатуры
+string workMode = "none"; // запущенный режим работы
+
+string getWorkMessage(Note note){
+    return 
+    "Данные ноты:\n"
+    "Имя: " + (string)note.getName();
+}
+
+int enChngFlag = 0; // для энгармонической замены
+Note note;
 
 int main() {
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message){
@@ -21,23 +31,29 @@ int main() {
     });
     bot.getEvents().onCommand("note", [&bot](Message::Ptr message) {
         workChat = message->chat->id; // сохраняем идентификатор чата
+        workMode = "note";
         InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup); // cсоздаем доп. клавиатуру
 
-        InlineKeyboardButton::Ptr button1(new InlineKeyboardButton);  // создаем кнопки
-        button1->text = "Завершить работу";
-        button1->callbackData = "but1";
+        InlineKeyboardButton::Ptr exitBtn(new InlineKeyboardButton);  // создаем кнопки
+        exitBtn->text = "Завершить работу";
+        exitBtn->callbackData = "exit";
 
-        InlineKeyboardButton::Ptr button2(new InlineKeyboardButton);
-        button2->text = "Кнопка 2";
-        button2->callbackData = "but2";
+        InlineKeyboardButton::Ptr upBut(new InlineKeyboardButton);
+        upBut->text = "Повысить";
+        upBut->callbackData = "up";
 
-        InlineKeyboardButton::Ptr button3(new InlineKeyboardButton);
-        button3->text = "Кнопка 3";
-        button3->callbackData = "but3";
+        InlineKeyboardButton::Ptr downBut(new InlineKeyboardButton);
+        downBut->text = "Понизить";
+        downBut->callbackData = "down";
+        
+        InlineKeyboardButton::Ptr enharmonyChng(new InlineKeyboardButton);
+        enharmonyChng->text = "Энгармоническая замена";
+        enharmonyChng->callbackData = "enChng";
 
         vector<vector<InlineKeyboardButton::Ptr>> rows;
-        rows.push_back({ button1});   // Первый ряд с одной кнопкой
-        rows.push_back({ button2, button3 });  // Второй ряд с двумя кнопками
+        rows.push_back({exitBtn}); // Первый ряд с одной кнопкой
+        rows.push_back({upBut, downBut}); // Второй ряд с двумя кнопками
+        rows.push_back({enharmonyChng});
 
         keyboard->inlineKeyboard = rows;
 
@@ -48,13 +64,35 @@ int main() {
 
     bot.getEvents().onCallbackQuery([&bot](CallbackQuery::Ptr query) {
         string data = query->data;
-        if (data == "but1") {
-            bot.getApi().deleteMessage(workChat, keyMessage->messageId);
-            bot.getApi().sendMessage(workChat, "Работа завершена.");
-        } else if (data == "but2") {
-            bot.getApi().editMessageText("Вы нажали вторую кнопку", workChat, workMessage->messageId);
-        } else if (data == "but3") {
-            bot.getApi().editMessageText("Третья кнопка нажата", workChat, workMessage->messageId);
+        if(workMode == "note"){
+            if (data == "exit") {
+                bot.getApi().deleteMessage(workChat, keyMessage->messageId);
+                bot.getApi().sendMessage(workChat, "Работа завершена.");
+            } else if(data == "up") {
+                ++note.sygn;
+                if(note.name == 'b' || note.name == 'e' || note.sygn >= 2){
+                    note.enharmonyChange(1);
+                }
+                bot.getApi().editMessageText(getWorkMessage(note), workChat, workMessage->messageId);
+            } else if(data == "down") {
+                --note.sygn;
+                if(note.name == 'c' || note.name == 'f' || note.sygn <=-2){
+                    note.enharmonyChange(0);
+                }
+                if(!note.octave){
+                    note.octave = 1;
+                    note.name = 'a';
+                }
+                if(getWorkMessage(note) != workMessage->text){
+                    bot.getApi().editMessageText(getWorkMessage(note), workChat, workMessage->messageId);
+                }
+            } else if(data == "enChngUp"){
+                //дописать
+            } else if(data == "enChngDown"){
+                //и это тоже
+            }
+        } else if(workMode == "interval"){
+            bot.getApi().sendMessage(workChat, "Интервалы пока не работают");
         }
     });
 
