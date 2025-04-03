@@ -3,7 +3,9 @@ g++ testTgBot.cpp -o bin/testTgBot --std=c++20 -I/usr/local/include -lTgBot -lbo
 clear
 */ 
 #include <iostream>
+#include <string>
 #include <tgbot/tgbot.h>
+#include <ctime>
 #include "core/core.h"
 using namespace std;
 using namespace TgBot;
@@ -14,19 +16,33 @@ boost::variant< std::int64_t, std::string > workChat; // айди рабочег
 Message::Ptr workMessage; // данные сообщения-монитора
 Message::Ptr keyMessage; // данные сообщения-клавиатуры
 string workMode = "none"; // запущенный режим работы
+string workMessageData; // для контроля изменений в тообщении
+Note note;
+Interval interval;
+Scale scale;
+Key key;
+string timeToWork; // для контроля отключения процесса
 
 string getWorkMessage(Note note){
-    return 
+    return
     "Данные ноты:\n"
-    "Имя: " + (string)note.getName();
+    "Имя: " + (string)note.getName() +
+    "\nОктава: " + to_string(note.octave);
 }
 
-int enChngFlag = 0; // для энгармонической замены
-Note note;
-
 int main() {
+    time_t seconds = time(NULL);
+    tm* timeinfo = localtime(&seconds);
+    timeToWork = (string)asctime(timeinfo);
+
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message){
-        bot.getApi().sendMessage(message->chat->id, "Прив ^^");
+        bot.getApi().sendMessage(message->chat->id,
+            "Прив ^^\nВремя начала работы: " + timeToWork +
+            "\nСписок комманд:\n/start - выводит это меню\n"
+            "/note - работа с нотой\n"
+            "/interval - работа с интервалом\n"
+            "/scale - работа со звукорядом\n"
+            "/key - работа с тональностью");
         workChat = message->chat->id;
     });
     bot.getEvents().onCommand("note", [&bot](Message::Ptr message) {
@@ -46,19 +62,23 @@ int main() {
         downBut->text = "Понизить";
         downBut->callbackData = "down";
         
-        InlineKeyboardButton::Ptr enharmonyChng(new InlineKeyboardButton);
-        enharmonyChng->text = "Энгармоническая замена";
-        enharmonyChng->callbackData = "enChng";
+        InlineKeyboardButton::Ptr enharmonyChngUp(new InlineKeyboardButton);
+        enharmonyChngUp->text = "Энг. замена вверх";
+        enharmonyChngUp->callbackData = "enChngUp";
+
+        InlineKeyboardButton::Ptr enharmonyChngDown(new InlineKeyboardButton);
+        enharmonyChngDown->text = "Энг. замена вниз";
+        enharmonyChngDown->callbackData = "enChngDown";
 
         vector<vector<InlineKeyboardButton::Ptr>> rows;
         rows.push_back({exitBtn}); // Первый ряд с одной кнопкой
         rows.push_back({upBut, downBut}); // Второй ряд с двумя кнопками
-        rows.push_back({enharmonyChng});
+        rows.push_back({enharmonyChngUp, enharmonyChngDown});
 
         keyboard->inlineKeyboard = rows;
 
         LinkPreviewOptions::Ptr ptr;
-        workMessage = bot.getApi().sendMessage(message->chat->id, "...");
+        workMessage = bot.getApi().sendMessage(message->chat->id, getWorkMessage(note));
         keyMessage = bot.getApi().sendMessage(message->chat->id, "Нажимай на кнопки и изменяй сообщение с данными сверху", ptr, 0, keyboard);
     });
 
@@ -74,6 +94,7 @@ int main() {
                     note.enharmonyChange(1);
                 }
                 bot.getApi().editMessageText(getWorkMessage(note), workChat, workMessage->messageId);
+                workMessageData = getWorkMessage(note);
             } else if(data == "down") {
                 --note.sygn;
                 if(note.name == 'c' || note.name == 'f' || note.sygn <=-2){
@@ -83,13 +104,22 @@ int main() {
                     note.octave = 1;
                     note.name = 'a';
                 }
-                if(getWorkMessage(note) != workMessage->text){
+                if(getWorkMessage(note) != workMessageData){
                     bot.getApi().editMessageText(getWorkMessage(note), workChat, workMessage->messageId);
+                    workMessageData = getWorkMessage(note);
                 }
             } else if(data == "enChngUp"){
-                //дописать
+                note.enharmonyChange(1);
+                if(getWorkMessage(note) != workMessageData){
+                    bot.getApi().editMessageText(getWorkMessage(note), workChat, workMessage->messageId);
+                    workMessageData = getWorkMessage(note);
+                }
             } else if(data == "enChngDown"){
-                //и это тоже
+                note.enharmonyChange(0);
+                if(getWorkMessage(note) != workMessageData){
+                    bot.getApi().editMessageText(getWorkMessage(note), workChat, workMessage->messageId);
+                    workMessageData = getWorkMessage(note);
+                }
             }
         } else if(workMode == "interval"){
             bot.getApi().sendMessage(workChat, "Интервалы пока не работают");
