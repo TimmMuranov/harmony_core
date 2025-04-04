@@ -16,7 +16,7 @@ boost::variant< std::int64_t, std::string > workChat; // айди рабочег
 Message::Ptr workMessage; // данные сообщения-монитора
 Message::Ptr keyMessage; // данные сообщения-клавиатуры
 string workMode = "none"; // запущенный режим работы
-string workMessageData; // для контроля изменений в тообщении
+string workMessageData; // для контроля изменений в сообщении
 Note note;
 Interval interval;
 Scale scale;
@@ -80,6 +80,10 @@ int main() {
         LinkPreviewOptions::Ptr ptr;
         workMessage = bot.getApi().sendMessage(message->chat->id, getWorkMessage(note));
         keyMessage = bot.getApi().sendMessage(message->chat->id, "Нажимай на кнопки и изменяй сообщение с данными сверху", ptr, 0, keyboard);
+    });
+
+    bot.getEvents().onCommand("note", [&bot](Message::Ptr message){
+
     });
 
     bot.getEvents().onCallbackQuery([&bot](CallbackQuery::Ptr query) {
