@@ -4,6 +4,7 @@ clear
 */ 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <tgbot/tgbot.h>
 #include <ctime>
 #include "core/core.h"
@@ -18,6 +19,7 @@ Message::Ptr keyMessage; // данные сообщения-клавиатуры
 string workMode = "none"; // запущенный режим работы
 string workMessageData; // для контроля изменений в сообщении
 Note note;
+vector <Note> noteVector; //для сохранения нот
 Interval interval;
 Scale scale;
 Key key;
@@ -83,7 +85,7 @@ int main() {
     });
 
     bot.getEvents().onCommand("note", [&bot](Message::Ptr message){
-
+        workMode = "interval";
     });
 
     bot.getEvents().onCallbackQuery([&bot](CallbackQuery::Ptr query) {
