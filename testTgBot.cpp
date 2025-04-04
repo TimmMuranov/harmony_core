@@ -14,8 +14,8 @@ using namespace TgBot;
 Bot bot("token");
 
 boost::variant< std::int64_t, std::string > workChat; // айди рабочего чата
-Message::Ptr workMessage; // данные сообщения-монитора
-Message::Ptr keyMessage; // данные сообщения-клавиатуры
+Message::Ptr workMessage; // данные запущенного сообщения-монитора
+Message::Ptr keyMessage; // данные запущенного сообщения-клавиатуры
 string workMode = "none"; // запущенный режим работы
 string workMessageData; // для контроля изменений в сообщении
 Note note;
@@ -73,14 +73,19 @@ int main() {
         enharmonyChngUp->text = "Энг. замена вверх";
         enharmonyChngUp->callbackData = "enChngUp";
 
-        InlineKeyboardButton::Ptr enharmonyChngDown(new InlineKeyboardButton);
+        enharmonyChngDown(new InlineKeyboardButton);
         enharmonyChngDown->text = "Энг. замена вниз";
         enharmonyChngDown->callbackData = "enChngDown";
 
+        InlineKeyboardButton::Ptr saveNote(new InlineKeyboardButton);
+        saveNote->text = "Сохранить ноту";
+        saveNote->callbackData = "save";
+        
         vector<vector<InlineKeyboardButton::Ptr>> rows; // создаем указатели на клавиши
         rows.push_back({exitBtn}); // Первый ряд с одной кнопкой
         rows.push_back({upBut, downBut}); // Второй ряд с двумя кнопками
         rows.push_back({enharmonyChngUp, enharmonyChngDown});
+        rows.push_back({saveNote});
 
         keyboard->inlineKeyboard = rows;
 
@@ -89,7 +94,7 @@ int main() {
         keyMessage = bot.getApi().sendMessage(message->chat->id, "Нажимай на кнопки и изменяй сообщение с данными сверху", ptr, 0, keyboard);
     });
 
-    bot.getEvents().onCommand("note", [&bot](Message::Ptr message){
+    bot.getEvents().onCommand("interval", [&bot](Message::Ptr message){
         workMode = "interval";
         workChat = message->chat->id;
         InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
@@ -110,7 +115,7 @@ int main() {
         if(workMode == "note"){
             if (data == "exit") {
                 bot.getApi().deleteMessage(workChat, keyMessage->messageId);
-                bot.getApi().sendMessage(workChat, "Работа завершена.");
+                bot.getApi().sendMessage(workChat, "Работа завершена без сохранения.");
             } else if(data == "up") {
                 ++note.sygn;
                 if(note.name == 'b' || note.name == 'e' || note.sygn >= 2){
@@ -143,7 +148,11 @@ int main() {
                     bot.getApi().editMessageText(getWorkMessage(note), workChat, workMessage->messageId);
                     workMessageData = getWorkMessage(note);
                 }
-            }
+            } else if(data == "save"){
+                noteVector.push_back(note);
+                bot.getApi().deleteMessage(workChat, keyMessage->messageId);
+                bot.getApi().sendMessage(workChat, "Работа завершена. Нота сохранена.");
+            }// необходимо добавить комманду редактирования (или дописать команду создания): добавить возможность редактировать сохраненную ноту
         } else if(workMode == "interval"){
             bot.getApi().sendMessage(workChat, "Интервалы пока не работают");
         }
