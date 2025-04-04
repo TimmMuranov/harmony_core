@@ -31,6 +31,11 @@ string getWorkMessage(Note note){
     "Имя: " + (string)note.getName() +
     "\nОктава: " + to_string(note.octave);
 }
+string getWorkMessage(Interval interval){
+    return
+    "Данные интервала:\n"
+    "расстояние между нот: " + to_string(interval.getDistance());
+}
 
 int main() {
     time_t seconds = time(NULL);
@@ -72,7 +77,7 @@ int main() {
         enharmonyChngDown->text = "Энг. замена вниз";
         enharmonyChngDown->callbackData = "enChngDown";
 
-        vector<vector<InlineKeyboardButton::Ptr>> rows;
+        vector<vector<InlineKeyboardButton::Ptr>> rows; // создаем указатели на клавиши
         rows.push_back({exitBtn}); // Первый ряд с одной кнопкой
         rows.push_back({upBut, downBut}); // Второй ряд с двумя кнопками
         rows.push_back({enharmonyChngUp, enharmonyChngDown});
@@ -86,6 +91,18 @@ int main() {
 
     bot.getEvents().onCommand("note", [&bot](Message::Ptr message){
         workMode = "interval";
+        workChat = message->chat->id;
+        InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
+
+        InlineKeyboardButton::Ptr exitBtn(new InlineKeyboardButton);  // создаем кнопки
+        exitBtn->text = "Завершить работу";
+        exitBtn->callbackData = "exit";
+
+        vector<vector<InlineKeyboardButton::Ptr>> rows;
+        rows.push_back({exitBtn});
+
+        workMessage = bot.getApi().sendMessage(message->chat->id, getWorkMessage(interval());
+        keyMessage = bot.getApi().sendMessage(message->chat->id, "Нажимай на кнопки и изменяй сообщение с данными сверху", ptr, 0, keyboard);
     });
 
     bot.getEvents().onCallbackQuery([&bot](CallbackQuery::Ptr query) {
