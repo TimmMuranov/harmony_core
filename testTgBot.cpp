@@ -16,13 +16,16 @@ Bot bot("token");
 boost::variant< std::int64_t, std::string > workChat; // айди рабочего чата
 Message::Ptr workMessage; // данные запущенного сообщения-монитора
 Message::Ptr keyMessage; // данные запущенного сообщения-клавиатуры
+Message::Ptr saveObjects; // универсальное сообщение. Хранит ссылки на сохраненные объекты. Каждый режим заново пересобирает его
 string workMode = "none"; // запущенный режим работы
 string workMessageData; // для контроля изменений в сообщении
+//----------------- рабочие объекты ----------------------
 Note note;
 vector <Note> noteVector; //для сохранения нот
 Interval interval;
 Scale scale;
 Key key;
+//--------------------------------------------------------
 string timeToWork; // для контроля отключения процесса
 
 string getWorkMessage(Note note){
